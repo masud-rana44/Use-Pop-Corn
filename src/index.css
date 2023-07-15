@@ -50,7 +50,7 @@ body {
 }
 
 .btn-toggle {
-  @apply absolute top-2 right-2 h-6 aspect-[1] rounded-full border-none bg-background500 text-text text-sm font-bold cursor-pointer z-20;
+  @apply absolute top-2 right-2 h-6 aspect-[1] rounded-full border-none bg-background900 text-text text-sm font-bold cursor-pointer z-20;
 }
 
 /* CSS */

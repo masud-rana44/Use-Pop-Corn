@@ -1,19 +1,10 @@
 import React, { Fragment, useState } from "react";
 import Nav from "./Nav";
-import ListBox from "./ListBox";
-import WatchedBox from "./WatchedBox";
-
-// :root {
-//   --color-primary: #6741d9;
-//   --color-primary-light: #7950f2;
-//   --color-text: #dee2e6;
-//   --color-text-dark: #adb5bd;
-//   --color-background-100: #343a40;
-//   --color-background-500: #2b3035;
-//   --color-background-900: #212529;
-//   --color-red: #fa5252;
-//   --color-red-dark: #e03131;
-// }
+import Box from "./Box";
+import WatchedSummary from "./WatchedSummary";
+import WatchedMovieList from "./WatchedMovieList";
+import { NumResults } from "./NumResults";
+import { MovieList } from "./MovieList";
 
 const tempMovieData = [
   {
@@ -68,10 +59,19 @@ function App() {
 
   return (
     <>
-      <Nav movies={movies} />
+      <Nav>
+        <NumResults movies={movies} />
+      </Nav>
       <main className="main">
-        <ListBox movies={movies} />
-        <WatchedBox watched={watched} />
+        <Box>
+          <MovieList movies={movies} />
+        </Box>
+        <Box>
+          <>
+            <WatchedSummary watched={watched} />
+            <WatchedMovieList watched={watched} />
+          </>
+        </Box>
       </main>
     </>
   );
