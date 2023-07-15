@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Movie from "./Movie";
-import useMovieList from "../hooks/useMovieList";
 
-function Results({ movies }) {
+function ListBox({ movies }) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -10,15 +9,19 @@ function Results({ movies }) {
       <button className="btn-toggle" onClick={() => setIsOpen((open) => !open)}>
         {isOpen ? "–" : "+"}
       </button>
-      {isOpen && (
-        <ul>
-          {movies?.map((movie) => (
-            <Movie key={movie.imdbID} {...movie} />
-          ))}
-        </ul>
-      )}
+      {isOpen && <MovieList movies={movies} />}
     </div>
   );
 }
 
-export default Results;
+function MovieList({ movies }) {
+  return (
+    <ul className="list">
+      {movies?.map((movie) => (
+        <Movie key={movie.imdbID} {...movie} />
+      ))}
+    </ul>
+  );
+}
+
+export default ListBox;

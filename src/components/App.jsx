@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import Nav from "./Nav";
-import Results from "./Results";
-import Description from "./Description";
+import ListBox from "./ListBox";
+import WatchedBox from "./WatchedBox";
 
 // :root {
 //   --color-primary: #6741d9;
@@ -70,8 +70,8 @@ function App() {
     <>
       <Nav movies={movies} />
       <main className="main">
-        <Results movies={movies} />
-        <Description watched={watched} />
+        <ListBox movies={movies} />
+        <WatchedBox watched={watched} />
       </main>
     </>
   );

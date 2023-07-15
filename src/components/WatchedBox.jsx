@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 
-function Description({ watched }) {
+function WatchedBox({ watched }) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -21,11 +21,11 @@ function Description({ watched }) {
   );
 }
 
-export default Description;
+export default WatchedBox;
 
 function WatchedSummary({ watched }) {
   return (
-    <div>
+    <div className="summary">
       <h2>Movies you watched</h2>
       <div>
         <p>
@@ -51,11 +51,11 @@ function WatchedSummary({ watched }) {
 
 function WatchedMovieList({ watched }) {
   return (
-    <ul>
+    <ul className="list">
       {watched.map((movie) => (
         <li>
-          <img src={movie.poster} alt={`${movie.title} poster`} />
-          <h3>{movie.title}</h3>
+          <img src={movie.Poster} alt={`${movie.title} poster`} />
+          <h3>{movie.Title}</h3>
           <div>
             <p>
               <p>
