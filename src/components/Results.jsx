@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import Movie from "./Movie";
+import useMovieList from "../hooks/useMovieList";
 
-function Results() {
+function Results({ movies }) {
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
-    <section className="bg-[#2b3035] min-h-screen rounded-lg">
-      <Movie />
-      <Movie />
-      <Movie />
-    </section>
+    <div className="box">
+      <button className="btn-toggle" onClick={() => setIsOpen((open) => !open)}>
+        {isOpen ? "–" : "+"}
+      </button>
+      {isOpen && (
+        <ul>
+          {movies?.map((movie) => (
+            <Movie key={movie.imdbID} {...movie} />
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
