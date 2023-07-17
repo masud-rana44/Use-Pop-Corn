@@ -23,12 +23,12 @@ body {
 }
 
 /* General */
-.lader {
-  @apply text-center uppercase font-bold text-xl m-12;
+.loader {
+  @apply text-center uppercase font-bold text-lg m-12;
 }
 
 .error {
-  @apply text-center text-xl p-12;
+  @apply text-center text-lg p-12;
 }
 
 /* NavBer */
@@ -55,10 +55,19 @@ body {
 
 /* CSS */
 
+::-webkit-scrollbar {
+  /* height: 300px;
+  width: 50%;
+  overflow: auto;
+  padding: 0 10px; */
+  display: none;
+}
+
 .list {
   list-style: none;
   padding: 8px 0;
-  /* overflow: scroll; */
+  max-height: 100%;
+  overflow: auto;
 }
 
 .list-watched {

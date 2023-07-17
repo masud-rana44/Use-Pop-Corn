@@ -56,19 +56,32 @@ const tempWatchedData = [
 function App() {
   const [watched, setWatched] = useState(tempWatchedData);
   const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(function () {
     async function fetchMovieData() {
       try {
+        setIsLoading(true);
+        setError("");
+
         const response = await fetch(
           `http://www.omdbapi.com/?apikey=${
             import.meta.env.VITE_APP_OMDB_API_KEY
-          }&s=inception`
+          }&s=parasite`
         );
+
+        if (!response.ok) throw new Error("Failed to fetched data");
+
         const data = await response.json();
+        if (data.Response === "False") throw new Error("Movie not found!");
+
         setMovies(data.Search);
       } catch (err) {
-        console.log(err);
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -82,7 +95,9 @@ function App() {
       </Nav>
       <main className="main">
         <Box>
-          <MovieList movies={movies} />
+          {isLoading && <Loader />}
+          {!isLoading && !error && <MovieList movies={movies} />}
+          {error && <ErrorMessage message={error} />}
         </Box>
         <Box>
           <>
@@ -96,3 +111,15 @@ function App() {
 }
 
 export default App;
+
+function Loader() {
+  return <p className="loader">Loading...</p>;
+}
+
+function ErrorMessage({ message = "There was an error!" }) {
+  return (
+    <p className="error">
+      <span>⛔️</span> {message}
+    </p>
+  );
+}
