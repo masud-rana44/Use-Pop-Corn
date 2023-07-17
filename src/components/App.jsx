@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Nav from "./Nav";
 import Box from "./Box";
 import WatchedSummary from "./WatchedSummary";
@@ -55,7 +55,25 @@ const tempWatchedData = [
 
 function App() {
   const [watched, setWatched] = useState(tempWatchedData);
-  const [movies, setMovies] = useState(tempMovieData);
+  const [movies, setMovies] = useState([]);
+
+  useEffect(function () {
+    async function fetchMovieData() {
+      try {
+        const response = await fetch(
+          `http://www.omdbapi.com/?apikey=${
+            import.meta.env.VITE_APP_OMDB_API_KEY
+          }&s=inception`
+        );
+        const data = await response.json();
+        setMovies(data.Search);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    fetchMovieData();
+  }, []);
 
   return (
     <>
