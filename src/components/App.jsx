@@ -5,30 +5,10 @@ import WatchedSummary from "./WatchedSummary";
 import WatchedMovieList from "./WatchedMovieList";
 import { NumResults } from "./NumResults";
 import { MovieList } from "./MovieList";
-
-const tempMovieData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt0133093",
-    Title: "The Matrix",
-    Year: "1999",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt6751668",
-    Title: "Parasite",
-    Year: "2019",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
-  },
-];
+import Search from "./Search";
+import MovieDetails from "./MovieDetails";
+import Loader from "./Loader";
+import ErrorMessage from "./ErrorMessage";
 
 const tempWatchedData = [
   {
@@ -53,57 +33,96 @@ const tempWatchedData = [
   },
 ];
 
+const KEY = import.meta.env.VITE_APP_OMDB_API_KEY;
+
 function App() {
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [query, setQuery] = useState("inception");
+  const [watched, setWatched] = useState([]);
   const [movies, setMovies] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(function () {
-    async function fetchMovieData() {
-      try {
-        setIsLoading(true);
-        setError("");
+  function handleSelectMovie(id) {
+    setSelectedId((selectedId) => (selectedId === id ? null : id));
+  }
 
-        const response = await fetch(
-          `http://www.omdbapi.com/?apikey=${
-            import.meta.env.VITE_APP_OMDB_API_KEY
-          }&s=parasite`
-        );
+  function handleCloseMovie() {
+    setSelectedId(null);
+  }
 
-        if (!response.ok) throw new Error("Failed to fetched data");
+  function handleAddWatched(movie) {
+    setWatched((watched) => [...watched, movie]);
+  }
 
-        const data = await response.json();
-        if (data.Response === "False") throw new Error("Movie not found!");
+  function handleDeleteWatched(id) {
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
+  }
 
-        setMovies(data.Search);
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
+  useEffect(
+    function () {
+      async function fetchMovieData() {
+        try {
+          setIsLoading(true);
+          setError("");
+
+          const response = await fetch(
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          );
+
+          if (!response.ok) throw new Error("Failed to fetched data");
+
+          const data = await response.json();
+          console.log(data);
+          if (data.Response === "False") throw new Error("Movie not found!");
+
+          setMovies(data.Search);
+        } catch (err) {
+          console.error(err);
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
+        }
       }
-    }
 
-    fetchMovieData();
-  }, []);
+      if (query.length >= 2) {
+        fetchMovieData();
+      }
+    },
+    [query]
+  );
 
   return (
     <>
       <Nav>
+        <Search query={query} setQuery={setQuery} />
         <NumResults movies={movies} />
       </Nav>
       <main className="main">
         <Box>
           {isLoading && <Loader />}
-          {!isLoading && !error && <MovieList movies={movies} />}
+          {!isLoading && !error && (
+            <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
+          )}
           {error && <ErrorMessage message={error} />}
         </Box>
         <Box>
-          <>
-            <WatchedSummary watched={watched} />
-            <WatchedMovieList watched={watched} />
-          </>
+          {selectedId ? (
+            <MovieDetails
+              watched={watched}
+              selectedId={selectedId}
+              onCloseMovie={handleCloseMovie}
+              onAddWatched={handleAddWatched}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMovieList
+                watched={watched}
+                onDeleteWatched={handleDeleteWatched}
+              />
+            </>
+          )}
         </Box>
       </main>
     </>
@@ -111,15 +130,3 @@ function App() {
 }
 
 export default App;
-
-function Loader() {
-  return <p className="loader">Loading...</p>;
-}
-
-function ErrorMessage({ message = "There was an error!" }) {
-  return (
-    <p className="error">
-      <span>⛔️</span> {message}
-    </p>
-  );
-}

@@ -42,7 +42,7 @@ body {
 
 /* Main */
 .main {
-  @apply mt-6 flex justify-center gap-6 h-[calc(100vh-72px-3*24px)];
+  @apply mt-6 flex justify-center gap-6 h-[calc(100vh-73px-3*24px)];
 }
 
 .box {
@@ -171,6 +171,7 @@ body {
 .details {
   line-height: 1.4;
   font-size: 14px;
+  overflow: scroll;
 }
 
 .details header {
