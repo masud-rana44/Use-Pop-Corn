@@ -46,6 +46,22 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
 
   useEffect(
     function () {
+      function callback(e) {
+        if (e.code !== "Escape") return;
+        onCloseMovie();
+      }
+
+      document.addEventListener("keydown", callback);
+
+      return function () {
+        document.removeEventListener("keydown", callback);
+      };
+    },
+    [onCloseMovie]
+  );
+
+  useEffect(
+    function () {
       async function fetchMovieData() {
         try {
           setIsLoading(true);
@@ -77,6 +93,7 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
       if (!title) return;
       document.title = `MOVIE: ${title}`;
 
+      // cleanup function
       return function () {
         document.title = "usePopcorn";
       };

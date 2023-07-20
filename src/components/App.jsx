@@ -36,7 +36,7 @@ const tempWatchedData = [
 const KEY = import.meta.env.VITE_APP_OMDB_API_KEY;
 
 function App() {
-  const [query, setQuery] = useState("inception");
+  const [query, setQuery] = useState("");
   const [watched, setWatched] = useState(function () {
     const storedData = localStorage.getItem("watched");
     return JSON.parse(storedData);
@@ -71,33 +71,43 @@ function App() {
 
   useEffect(
     function () {
+      const controller = new AbortController();
+
       async function fetchMovieData() {
         try {
           setIsLoading(true);
           setError("");
 
           const response = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+            {
+              signal: controller.signal,
+            }
           );
 
           if (!response.ok) throw new Error("Failed to fetched data");
 
           const data = await response.json();
-          console.log(data);
           if (data.Response === "False") throw new Error("Movie not found!");
 
           setMovies(data.Search);
+          setError("");
         } catch (err) {
-          console.error(err);
-          setError(err.message);
+          if (err.name !== "AbortError") {
+            console.log(err.message);
+            setError(err.message);
+          }
         } finally {
           setIsLoading(false);
         }
       }
 
-      if (query.length >= 2) {
-        fetchMovieData();
-      }
+      handleCloseMovie();
+      if (query.length !== 0) fetchMovieData();
+
+      return function () {
+        controller.abort();
+      };
     },
     [query]
   );
