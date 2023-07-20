@@ -37,7 +37,10 @@ const KEY = import.meta.env.VITE_APP_OMDB_API_KEY;
 
 function App() {
   const [query, setQuery] = useState("inception");
-  const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(function () {
+    const storedData = localStorage.getItem("watched");
+    return JSON.parse(storedData);
+  });
   const [movies, setMovies] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,22 +56,18 @@ function App() {
 
   function handleAddWatched(movie) {
     setWatched((watched) => [...watched, movie]);
-    localStorage.setItem("watched", JSON.stringify([...watched, movie]));
   }
 
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
-    localStorage.setItem(
-      "watched",
-      JSON.stringify(watched.filter((movie) => movie.imdbID !== id))
-    );
   }
 
-  useEffect(function () {
-    const storedData = JSON.parse(localStorage.getItem("watched"));
-    console.log(storedData);
-    setWatched(storedData);
-  }, []);
+  useEffect(
+    function () {
+      localStorage.setItem("watched", JSON.stringify(watched));
+    },
+    [watched]
+  );
 
   useEffect(
     function () {

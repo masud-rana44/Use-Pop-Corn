@@ -29,12 +29,6 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
     Genre: genre,
   } = movie;
 
-  if (selectedId) {
-    document.title = `Movie | ${title}`;
-  } else {
-    document.title = "usePopcorn";
-  }
-
   function handleAdd() {
     const newWatchedMovie = {
       imdbID: selectedId,
@@ -76,6 +70,18 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
       fetchMovieData();
     },
     [selectedId]
+  );
+
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `MOVIE: ${title}`;
+
+      return function () {
+        document.title = "usePopcorn";
+      };
+    },
+    [title]
   );
 
   return (

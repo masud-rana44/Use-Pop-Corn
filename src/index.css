@@ -46,7 +46,7 @@ body {
 }
 
 .box {
-  @apply w-[420px] max-w-[420px] bg-background500 rounded-lg relative;
+  @apply w-[420px] max-w-[420px] bg-background500 rounded-lg relative overflow-auto;
 }
 
 .btn-toggle {
