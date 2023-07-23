@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import StarRating from "./StarRating";
 import Loader from "./Loader";
 import ErrorMessage from "./ErrorMessage";
+import { useKey } from "../hooks/useKey";
 
 const KEY = import.meta.env.VITE_APP_OMDB_API_KEY;
 const fallbackImg =
@@ -33,6 +34,8 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
     Genre: genre,
   } = movie;
 
+  useKey("Escape", onCloseMovie);
+
   function handleAdd() {
     const newWatchedMovie = {
       imdbID: selectedId,
@@ -55,22 +58,6 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
       countRef.current = [...countRef.current, userRating];
     },
     [userRating]
-  );
-
-  useEffect(
-    function () {
-      function callback(e) {
-        if (e.code !== "Escape") return;
-        onCloseMovie();
-      }
-
-      document.addEventListener("keydown", callback);
-
-      return function () {
-        document.removeEventListener("keydown", callback);
-      };
-    },
-    [onCloseMovie]
   );
 
   useEffect(
