@@ -1,20 +1,23 @@
-import React from "react";
+const fallbackImg =
+  "https://images.unsplash.com/reserve/LJIZlzHgQ7WPSh5KVTCB_Typewriter.jpg?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1vdmllJTIwcG9zdGVyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60";
 
-function Movie() {
+function Movie({
+  Title: title,
+  Poster: poster,
+  Year: year,
+  imdbID,
+  onSelectMovie,
+}) {
   return (
-    <div className="border-b-[2px] border-[#343a40] px-8 py-5 flex items-center gap-7 cursor-pointer">
-      <img
-        src={
-          "https://cdn.pixabay.com/photo/2019/08/21/02/32/light-4419996_640.jpg"
-        }
-        alt="Movie poster"
-        className="h-16 w-12"
-      />
-      <div className="flex flex-col gap-2">
-        <h2 className="font-semibold text-white  text-xl">Interstellar</h2>
-        <p className="text-white text-lg">📆 2014</p>
+    <li onClick={() => onSelectMovie(imdbID)}>
+      <img src={poster !== "N/A" ? poster : fallbackImg} alt={`movie poster`} />
+      <h3>{title}</h3>
+      <div>
+        <p>
+          <span>📆</span> <span>{year}</span>
+        </p>
       </div>
-    </div>
+    </li>
   );
 }
 
